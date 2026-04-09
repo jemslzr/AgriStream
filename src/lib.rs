@@ -1,5 +1,5 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl, contracttype, Address, Env, symbol_short, Symbol};
+use soroban_sdk::{contract, contractimpl, contracttype, Address, Env};
 use soroban_sdk::token::Client as TokenClient;
 
 #[contracttype]
@@ -48,7 +48,8 @@ impl ReliefFundContract {
         assert!(amount > 0, "No funds allocated for this address");
 
         // Reset allocation to prevent double-spending before transferring
-        env.storage().persistent().set(&allocation_key, &0);
+        // Reset allocation to prevent double-spending before transferring
+        env.storage().persistent().set(&allocation_key, &0i128);
 
         let token_id: Address = env.storage().instance().get(&DataKey::Token).unwrap();
         let token_client = TokenClient::new(&env, &token_id);
@@ -62,3 +63,5 @@ impl ReliefFundContract {
         env.storage().persistent().get(&DataKey::Allocation(beneficiary)).unwrap_or(0)
     }
 }
+#[cfg(test)]
+mod test; 
