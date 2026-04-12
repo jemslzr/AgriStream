@@ -69,23 +69,22 @@ agristream/
 
 ## 📜 Smart Contract
 
-The contract is compiled using the MSVC toolchain and optimized for the Stellar network to remove unsupported WASM features.
+The AgriStream logic is written in Rust and deployed as a Soroban smart contract. It has been optimized for the Stellar Testnet to ensure minimal gas consumption and maximum execution efficiency.
 
-**Deployed on Stellar Testnet:**
-CCXYD7JYJSKI7WWKI7Y7P3DDD4NSL7F3U5EQAF2UUO7QFBRCIEL3FHQE
+![Stellar Expert Explorer - Smart Contract](images/smartcontract.png)
 
-
-**Explorer Link:** [View on Stellar.Expert](https://stellar.expert/explorer/testnet/contract/CCXYD7JYJSKI7WWKI7Y7P3DDD4NSL7F3U5EQAF2UUO7QFBRCIEL3FHQE)
-
-**WASM Hash:** `4feaab8ac5d7997ce508201004f6b1133d2897f5b9e40d7581ff6db82c5e36fd`
+**Network Details:**
+* **Contract ID:** `CCXYD7JYJSKI7WWKI7Y7P3DDD4NSL7F3U5EQAF2UUO7QFBRCIEL3FHQE`
+* **WASM Hash:** `4feaab8ac5d7997ce508201004f6b1133d2897f5b9e40d7581ff6db82c5e36fd`
+* **Explorer Link:** [Verify on Stellar.Expert](https://stellar.expert/explorer/testnet/contract/CCXYD7JYJSKI7WWKI7Y7P3DDD4NSL7F3U5EQAF2UUO7QFBRCIEL3FHQE)
 
 ### Contract Functions
 
 | Function | Caller | Description |
 |---|---|---|
-| `allocate(admin, farmer, amount)` | NGO Admin | Locks USDC in escrow for a specific farmer address. |
+| `allocate(admin, farmer, amount)` | NGO Admin | Locks USDC in escrow for a specific farmer. |
 | `claim(farmer)` | Farmer | Transfers the locked funds from the contract to the farmer's wallet. |
-| `get_allocation(farmer)` | Anyone | Returns the current pending relief balance for a specific farmer. |
+| `get_allocation(farmer)` | Anyone | Read-only check of pending relief balance for a farmer. |
 
 ---
 
