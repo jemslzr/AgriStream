@@ -65,7 +65,7 @@ The AgriStream logic is written in Rust and deployed as a Soroban smart contract
 ### Network Details
 *   **Contract ID:** `CCXYD7JYJSKI7WWKI7Y7P3DDD4NSL7F3U5EQAF2UUO7QFBRCIEL3FHQE`
 *   **WASM Hash:** `4feaab8ac5d7997ce508201004f6b1133d2897f5b9e40d7581ff6db82c5e36fd`
-
+![Smart Contract](images/smartcontract.png)
 ---
 
 ## 🛠️ Prerequisites
