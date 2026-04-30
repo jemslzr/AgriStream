@@ -2,6 +2,30 @@
 
 Immediate disaster relief disbursement for Filipino farmers, built on Stellar Soroban.
 
+
+### 🎯 Target Users
+*   **Filipino Farmers:**  Rural small-scale agriculturists needing immediate liquidity post-calamity.
+*   **NGOs & Relief Organizations:**  Groups seeking a transparent and rapid way to distribute aid without traditional banking friction.
+
+---
+
+## 🏆 Demonstration
+
+* **Live Demo:** https://agri-stream-zkd6.vercel.app/
+* **Demo Video (1-min):**  https://youtu.be/VXvCMJ2TW6A
+![Demo](images/AgriStream.gif)
+* **CI/CD Pipeline:** [![Deploy Status](https://img.shields.io/badge/Vercel-Deployed-success)](#)https://github.com/jemslzr/AgriStream/actions/runs/25145310455
+* **Sample Transaction Hash:**  6589fda0f9b49a09c805ddb6798f09686ba9304363352ea729224be733f9813c
+
+### Screenshots
+| Mobile Responsive View (L4) |
+| :---: |
+| ![Mobile View](images/agristream-mobile.jpg) 
+ Passing Test Output (L3) | CI/CD Pipeline Running (L4) |
+| ![Test Output](images/test.png) 
+ Passing Test Output (L3) | CI/CD Pipeline Running (L4) |
+| ![CI/CD Pipeline](images/cicd.png) |
+
 ---
 
 ## ⚡ Problem
@@ -17,9 +41,72 @@ AgriStream uses **Soroban Smart Contracts** to bypass traditional financial red 
 * **Cost Effective:** Transaction fees are less than PHP 0.50 ($0.01), ensuring nearly 100% of the aid reaches the farmer.
 
 ---
+## 🌟 Stellar Features Used
 
-## 🏗️ Architecture
+| Feature | Usage |
+| :--- | :--- |
+| **Soroban Smart Contracts** | Implements core `allocate` and `claim` logic for secure, programmed aid. |
+| **USDC on Stellar** | Utilized as the primary settlement asset to provide price stability for farmers. |
+| **Deterministic Addressing** | Maps unique allocations to Farmer Public Keys to ensure funds reach the intended recipient. |
+| **On-Chain Audit Trail** | Every disbursement creates an immutable record on the Stellar ledger for transparency. |
 
+---
+
+## 📜 Smart Contract Functions
+
+The AgriStream logic is written in Rust and deployed as a Soroban smart contract.
+
+| Function | Caller | Description |
+| :--- | :--- | :--- |
+| `allocate(admin, farmer, amount)` | **NGO Admin** | Authorizes and locks USDC in escrow for a specific farmer's address. |
+| `claim(farmer)` | **Farmer** | Transfers the locked relief funds from the contract to the farmer's wallet. |
+| `get_allocation(farmer)` | **Anyone** | Read-only check to see the pending relief balance for a specific farmer. |
+
+### Network Details
+*   **Contract ID:** `CCXYD7JYJSKI7WWKI7Y7P3DDD4NSL7F3U5EQAF2UUO7QFBRCIEL3FHQE`
+*   **WASM Hash:** `4feaab8ac5d7997ce508201004f6b1133d2897f5b9e40d7581ff6db82c5e36fd`
+
+---
+
+## 🛠️ Prerequisites
+
+### For the Smart Contract
+*   **Rust & Cargo:** (Latest Stable)
+*   **Soroban CLI:** v22.0.0 or higher
+*   **WASM Target:** `wasm32-unknown-unknown`
+
+### For the Frontend
+*   **Node.js:** v18.0.0 or higher
+*   **Freighter Wallet:** Configured to the **Stellar Testnet**
+*   **Testnet Assets:** Account funded via Friendbot
+
+---
+
+## ⚙️ Setup & Installation
+
+### 1. Smart Contract
+```bash
+# Build the contract
+stellar contract build
+
+# Optimize for deployment
+stellar contract optimize --wasm target/wasm32-unknown-unknown/release/agri_stream.wasm
+2. Frontend
+Bash
+# Navigate to project root
+cd ayudastream-frontend
+
+# Install dependencies
+npm install
+
+# Start local development server
+npm run dev
+```
+
+### System Architecture
+
+
+```bash
 Browser (React + Vite + TypeScript)
 |-- Freighter Wallet API      (NGO Authentication & Signing)
 |-- @stellar/freighter-api    (Wallet Connection)
@@ -28,15 +115,9 @@ Browser (React + Vite + TypeScript)
 Stellar Testnet
 |-- AgriStream Smart Contract (Escrow & Allocation Logic)
 |-- USDC Token Contract       (Asset for disbursement)
-
-
 No traditional database is used for the core ledger. All relief allocations and disbursement states live natively on the Stellar blockchain, ensuring a transparent and tamper-proof audit trail for donors.
 
----
-
-## 📂 Project Structure
-
-agristream/
+📂 Project Structure
 ├── contracts/
 │   ├── src/
 │   │   ├── lib.rs              # Soroban contract: allocate, claim, get_allocation
@@ -52,74 +133,4 @@ agristream/
 │   └── package.json
 ├── target/                     # Compiled WASM binaries (Optimized)
 └── README.md
-
-
----
-
-## 🌟 Stellar Features Used
-
-| Feature | Usage |
-|---|---|
-| **Soroban Smart Contracts** | Secure Escrow logic — handled via `allocate` and `claim`. |
-| **USDC on Stellar** | Used as the settlement asset to avoid XLM price volatility. |
-| **Deterministic Addressing** | Mapping allocations to specific Farmer Public Keys for security. |
-| **Event Logging** | Diagnostic events for tracking successful disbursements on-chain. |
-
----
-
-## 📜 Smart Contract
-
-The AgriStream logic is written in Rust and deployed as a Soroban smart contract. It has been optimized for the Stellar Testnet to ensure minimal gas consumption and maximum execution efficiency.
-
-![Stellar Expert Explorer - Smart Contract](images/smartcontract.png)
-
-**Network Details:**
-* **Contract ID:** `CCXYD7JYJSKI7WWKI7Y7P3DDD4NSL7F3U5EQAF2UUO7QFBRCIEL3FHQE`
-* **WASM Hash:** `4feaab8ac5d7997ce508201004f6b1133d2897f5b9e40d7581ff6db82c5e36fd`
-* **Explorer Link:** [Verify on Stellar.Expert](https://stellar.expert/explorer/testnet/contract/CCXYD7JYJSKI7WWKI7Y7P3DDD4NSL7F3U5EQAF2UUO7QFBRCIEL3FHQE)
-
-### Contract Functions
-
-| Function | Caller | Description |
-|---|---|---|
-| `allocate(admin, farmer, amount)` | NGO Admin | Locks USDC in escrow for a specific farmer. |
-| `claim(farmer)` | Farmer | Transfers the locked funds from the contract to the farmer's wallet. |
-| `get_allocation(farmer)` | Anyone | Read-only check of pending relief balance for a farmer. |
-
----
-
-## 🛠️ Prerequisites
-
-**For the Smart Contract:**
-- Rust & Cargo (Latest Stable)
-- Soroban CLI v22+
-- `wasm32-unknown-unknown` target
-
-**For the Frontend:**
-- Node.js 18+
-- Freighter Wallet (configured to Testnet)
-- Testnet XLM (funded via Friendbot)
-
----
-
-## ⚙️ Setup & Installation
-
-### 1. Smart Contract
-The contract must be optimized before deployment to ensure compatibility with Soroban's WASM limits.
-```bash
-# Build the contract
-stellar contract build
-
-# Optimize for deployment
-stellar contract optimize --wasm target/wasm32-unknown-unknown/release/agri_stream.wasm
-2. Frontend
-Bash
-cd frontend
-npm install
-npm run dev
-The application will be accessible at http://localhost:5173.
-
-🎯 Target Users
-Filipino Farmers: Rural small-scale agriculturists needing immediate liquidity post-calamity.
-
-NGOs & LGUs: Relief organizations seeking a transparent, auditable, and rapid way to distribute aid without traditional banking friction.
+```
