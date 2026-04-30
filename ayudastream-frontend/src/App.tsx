@@ -345,7 +345,7 @@ function Dashboard({ balance, records, setPage }: { balance: number; records: Di
 /* ═══════════════════════════════════════════════════════════════
    3. DEPLOY AID (Centered Form)
 ══════════════════════════════════════════════════════════════════ */
-function DeployAid({ addr, onDeploy, setPage }: { addr: string; onDeploy: any; setPage: (p:Page)=>void }) {
+function DeployAid({ _addr, onDeploy, setPage }: { addr: string; onDeploy: any; setPage: (p:Page)=>void }) {
   const [farmer, setFarmer] = useState("");
   const [amount, setAmount] = useState("");
   const [program, setProgram] = useState("");
