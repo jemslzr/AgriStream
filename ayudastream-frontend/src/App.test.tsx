@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { isAllowed, getAddress } from '@stellar/freighter-api';
+import { CONTRACT_ID } from './config';
 
 vi.mock('@stellar/freighter-api', () => ({
   isAllowed: vi.fn().mockResolvedValue(true),
@@ -10,7 +11,6 @@ vi.mock('@stellar/freighter-api', () => ({
 
 describe('AgriStream dApp Environment Tests', () => {
   it('1. Verifies the Soroban Contract ID format is valid', () => {
-    const CONTRACT_ID = "CCXYD7JYJSKI7WWKI7Y7P3DDD4NSL7F3U5EQAF2UUO7QFBRCIEL3FHQE";
     expect(CONTRACT_ID.length).toBe(56);
     expect(CONTRACT_ID.startsWith('C')).toBe(true);
   });

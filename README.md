@@ -15,7 +15,7 @@ Immediate disaster relief disbursement for Filipino farmers, built on Stellar So
 * **Demo Video (1-min):**  https://youtu.be/VXvCMJ2TW6A
 ![Demo](images/AgriStream.gif)
 * **CI/CD Pipeline:** [![Deploy Status](https://img.shields.io/badge/Vercel-Deployed-success)](#)https://github.com/jemslzr/AgriStream/actions/runs/25145310455
-* **Sample Transaction Hash:**  6589fda0f9b49a09c805ddb6798f09686ba9304363352ea729224be733f9813c
+
 
 ### Screenshots
 | Mobile Responsive View (L4) |
@@ -63,8 +63,8 @@ The AgriStream logic is written in Rust and deployed as a Soroban smart contract
 | `get_allocation(farmer)` | **Anyone** | Read-only check to see the pending relief balance for a specific farmer. |
 
 ### Network Details
-*   **Contract ID:** `CCXYD7JYJSKI7WWKI7Y7P3DDD4NSL7F3U5EQAF2UUO7QFBRCIEL3FHQE`
-*   **WASM Hash:** `4feaab8ac5d7997ce508201004f6b1133d2897f5b9e40d7581ff6db82c5e36fd`
+*   **Contract ID:** `CCMEGXTJZZOWESH4OGKEDNNCKVB5BHFJ7UYSTQ4FI4Z5VCBBME2P3RKW`
+*   **WASM Hash:** `a31dfd0043a98aa18aaccfc99bcba633c37adc907fadf4aa7e5a5f54ae7446df`
 ![Smart Contract](images/smartcontract.png)
 ---
 

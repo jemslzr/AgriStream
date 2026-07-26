@@ -1,5 +1,6 @@
 // App.tsx - FINAL AGRISTREAM (With Scrolling Landing & Logo Home Link)
 import { useState, useEffect, useCallback } from "react";
+import { CONTRACT_ID } from './config';
 
 /* ─── DESIGN TOKENS (Your Earthy Palette) ─── */
 const T = {
@@ -96,7 +97,7 @@ export default function App() {
       const { rpc, TransactionBuilder, Networks, Contract, Address, nativeToScVal } = sdk;
 
       const server = new rpc.Server("https://soroban-testnet.stellar.org");
-      const CONTRACT = "CCXYD7JYJSKI7WWKI7Y7P3DDD4NSL7F3U5EQAF2UUO7QFBRCIEL3FHQE";
+      const CONTRACT = "CCMEGXTJZZOWESH4OGKEDNNCKVB5BHFJ7UYSTQ4FI4Z5VCBBME2P3RKW";
       const src = await server.getAccount(addr);
       
       const call = new Contract(CONTRACT).call(

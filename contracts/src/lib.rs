@@ -21,13 +21,18 @@ impl ReliefFundContract {
         env.storage().instance().set(&DataKey::Token, &token);
     }
 
-    /// Admin allocates a specific amount of relief funds to a beneficiary's address.
-    pub fn allocate(env: Env, admin: Address, beneficiary: Address, amount: i128) {
-        admin.require_auth();
-        let stored_admin: Address = env.storage().instance().get(&DataKey::Admin).unwrap();
-        assert!(admin == stored_admin, "Only admin can allocate");
+/// Anyone can allocate/donate relief funds to a beneficiary's address.
+    pub fn allocate(env: Env, donor: Address, beneficiary: Address, amount: i128) {
+        // 1. Require the donor (any wallet) to sign the transaction
+        donor.require_auth(); 
         assert!(amount > 0, "Amount must be positive");
 
+        // 2. Actually transfer the USDC from the donor's wallet into the smart contract
+        let token_id: Address = env.storage().instance().get(&DataKey::Token).unwrap();
+        let token_client = TokenClient::new(&env, &token_id);
+        token_client.transfer(&donor, &env.current_contract_address(), &amount);
+
+        // 3. Update the ledger so the beneficiary can claim it later
         let current_allocation = env
             .storage()
             .persistent()
