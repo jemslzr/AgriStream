@@ -2,7 +2,6 @@
 
 Immediate disaster relief disbursement for Filipino farmers, built on Stellar Soroban.
 
-
 ### 🎯 Target Users
 *   **Filipino Farmers:**  Rural small-scale agriculturists needing immediate liquidity post-calamity.
 *   **NGOs & Relief Organizations:**  Groups seeking a transparent and rapid way to distribute aid without traditional banking friction.
@@ -15,7 +14,6 @@ Immediate disaster relief disbursement for Filipino farmers, built on Stellar So
 * **Demo Video (1-min):**  https://youtu.be/VXvCMJ2TW6A
 ![Demo](images/AgriStream.gif)
 * **CI/CD Pipeline:** [![Deploy Status](https://img.shields.io/badge/Vercel-Deployed-success)](#)https://github.com/jemslzr/AgriStream/actions/runs/25145310455
-
 
 ### Screenshots
 | Mobile Responsive View (L4) |
@@ -59,13 +57,15 @@ The AgriStream logic is written in Rust and deployed as a Soroban smart contract
 | Function | Caller | Description |
 | :--- | :--- | :--- |
 | `allocate(admin, farmer, amount)` | **NGO Admin** | Authorizes and locks USDC in escrow for a specific farmer's address. |
-| `claim(farmer)` | **Farmer** | Transfers the locked relief funds from the contract to the farmer's wallet. |
-| `get_allocation(farmer)` | **Anyone** | Read-only check to see the pending relief balance for a specific farmer. |
+
 
 ### Network Details
-*   **Contract ID:** `CCMEGXTJZZOWESH4OGKEDNNCKVB5BHFJ7UYSTQ4FI4Z5VCBBME2P3RKW`
+*   **Network:** Stellar Testnet
+*   **Contract ID:** `GBD7VKH64NE5JN36ULJ3SJICE5Q6XVU6WF5EDK6O3EJW4MSL6XWWIBHM`
+*   **Explorer Link:** [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/GBD7VKH64NE5JN36ULJ3SJICE5Q6XVU6WF5EDK6O3EJW4MSL6XWWIBHM)
 *   **WASM Hash:** `a31dfd0043a98aa18aaccfc99bcba633c37adc907fadf4aa7e5a5f54ae7446df`
 ![Smart Contract](images/smartcontract.png)
+
 ---
 
 ## 🛠️ Prerequisites
@@ -91,8 +91,10 @@ stellar contract build
 
 # Optimize for deployment
 stellar contract optimize --wasm target/wasm32-unknown-unknown/release/agri_stream.wasm
-2. Frontend
-Bash
+```
+
+### 2. Frontend
+```Bash
 # Navigate to project root
 cd ayudastream-frontend
 
@@ -115,15 +117,16 @@ Browser (React + Vite + TypeScript)
 Stellar Testnet
 |-- AgriStream Smart Contract (Escrow & Allocation Logic)
 |-- USDC Token Contract       (Asset for disbursement)
-No traditional database is used for the core ledger. All relief allocations and disbursement states live natively on the Stellar blockchain, ensuring a transparent and tamper-proof audit trail for donors.
+```
 
-📂 Project Structure
+### 📂 Project Structure
+```bash
 ├── contracts/
 │   ├── src/
 │   │   ├── lib.rs              # Soroban contract: allocate, claim, get_allocation
 │   │   └── test.rs             # Unit tests for escrow logic
 │   └── Cargo.toml
-├── frontend/
+├── ayudastream-frontend/
 │   ├── src/
 │   │   ├── App.tsx             # Main Dashboard (NGO Portal)
 │   │   ├── App.css             # Branded Agricultural Design System

@@ -1,6 +1,5 @@
-// App.tsx - FINAL AGRISTREAM (With Scrolling Landing & Logo Home Link)
-import { useState, useEffect, useCallback } from "react";
-import { CONTRACT_ID } from './config';
+import { rpc, TransactionBuilder, Networks, Contract, Address, nativeToScVal } from "@stellar/stellar-sdk";
+import { isConnected, isAllowed, getAddress, signTransaction, requestAccess } from "@stellar/freighter-api";
 
 /* ─── DESIGN TOKENS (Your Earthy Palette) ─── */
 const T = {
@@ -97,7 +96,7 @@ export default function App() {
       const { rpc, TransactionBuilder, Networks, Contract, Address, nativeToScVal } = sdk;
 
       const server = new rpc.Server("https://soroban-testnet.stellar.org");
-      const CONTRACT = "CCMEGXTJZZOWESH4OGKEDNNCKVB5BHFJ7UYSTQ4FI4Z5VCBBME2P3RKW";
+      const CONTRACT = "GBD7VKH64NE5JN36ULJ3SJICE5Q6XVU6WF5EDK6O3EJW4MSL6XWWIBHM";
       const src = await server.getAccount(addr);
       
       const call = new Contract(CONTRACT).call(
@@ -353,18 +352,35 @@ function DeployAid({ onDeploy, setPage }: { addr?: string; onDeploy: any; setPag
   const [muni, setMuni] = useState("");
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
+  
+  // New Feedback States
+  const [feedback, setFeedback] = useState("");
+  const [feedbackSent, setFeedbackSent] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setStatus("Initiating Soroban secure transfer...");
-    await delay(1000);
+    
+    // Simulate initial loading step
+    await new Promise(r => setTimeout(r, 1000));
     setStatus("Please sign the transaction in Freighter...");
+    
     const res = await onDeploy(farmer, +amount, program, muni);
     setStatus(res.message);
     setBusy(false);
-    if(res.success) { setFarmer(""); setAmount(""); setProgram(""); setMuni(""); }
+    
+    if(res.success) { 
+        setFarmer(""); setAmount(""); setProgram(""); setMuni(""); 
+    }
   }
+
+  const handleFeedback = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFeedbackSent(true);
+    setFeedback("");
+    setTimeout(() => setFeedbackSent(false), 3000);
+  };
 
   const inputStyle = { width:"100%", padding:"1rem", borderRadius:T.r, border:`1px solid ${T.mist}`, background:T.cream, fontSize:"1rem" };
 
@@ -372,7 +388,7 @@ function DeployAid({ onDeploy, setPage }: { addr?: string; onDeploy: any; setPag
     <div className="fadeUp" style={{maxWidth:"650px", margin:"0 auto"}}>
       <button onClick={()=>setPage("dashboard")} style={{background:"none", border:"none", cursor:"pointer", color:T.bark, marginBottom:"1.5rem"}}>← Back to Dashboard</button>
       
-      <div style={{background:"white", padding:"3rem", borderRadius:T.r, boxShadow:"0 5px 15px rgba(0,0,0,0.03)"}}>
+      <div style={{background:"white", padding:"3rem", borderRadius:T.r, boxShadow:"0 5px 15px rgba(0,0,0,0.03)", marginBottom: "2rem"}}>
         <h2 style={{fontFamily:"'DM Serif Display',serif", fontSize:"2.2rem", color:T.soil, marginBottom:"0.5rem"}}>Disburse Relief Funds</h2>
         <p style={{color:T.bark, marginBottom:"2.5rem"}}>Execute a direct, on-chain transfer to a verified farmer.</p>
 
@@ -407,18 +423,44 @@ function DeployAid({ onDeploy, setPage }: { addr?: string; onDeploy: any; setPag
               <span style={{color: T.soil}}>Network Cost:</span>
               <span><span style={{color:T.success}}>Covered by NGO</span> (10,000 stroops)</span>
             </div>
-            <button type="submit" disabled={busy} style={{ width:"100%", background: busy ? T.mist : T.limeDk, color:"white", border:"none", padding:"1.2rem", borderRadius:T.r, fontSize:"1.1rem", fontWeight:700, cursor:busy ? "not-allowed" : "pointer", transition:"background 0.2s" }}>
+            
+            {/* Loading State UI integrated into the button */}
+            <button type="submit" disabled={busy} style={{ width:"100%", background: busy ? T.mist : T.limeDk, color:"white", border:"none", padding:"1.2rem", borderRadius:T.r, fontSize:"1.1rem", fontWeight:700, cursor:busy ? "not-allowed" : "pointer", transition:"background 0.2s", display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}>
+              {busy && <span style={{ width: "16px", height: "16px", border: "3px solid white", borderBottomColor: "transparent", borderRadius: "50%", display: "inline-block", animation: "spin 1s linear infinite" }}></span>}
               {busy ? "Processing on Testnet..." : `Authorize ${amount ? amount : '0.00'} USDC Transfer`}
             </button>
           </div>
 
+          {/* Error & Success Handling UI */}
           {status && (
-            <div style={{padding:"1rem", background:status.includes("Error")||status.includes("rejected") ? "#FEE2E2" : "#DCFCE7", color:status.includes("Error")||status.includes("rejected") ? T.danger : T.success, borderRadius:T.r, textAlign:"center", fontWeight:600}}>
+            <div style={{padding:"1rem", background:status.includes("Error")||status.includes("rejected") ? "#FEE2E2" : "#DCFCE7", color:status.includes("Error")||status.includes("rejected") ? T.danger : T.success, border: `1px solid ${status.includes("Error")||status.includes("rejected") ? T.danger : T.success}`, borderRadius:T.r, textAlign:"center", fontWeight:600}}>
               {status}
             </div>
           )}
         </form>
       </div>
+
+      {/* Basic User Feedback Collection */}
+      <div style={{background:"white", padding:"2rem", borderRadius:T.r, boxShadow:"0 5px 15px rgba(0,0,0,0.03)"}}>
+         <h3 style={{fontFamily:"'DM Serif Display',serif", fontSize:"1.5rem", color:T.soil, marginBottom:"1rem"}}>Help Us Improve</h3>
+         <form onSubmit={handleFeedback} style={{display: "flex", flexDirection: "column", gap: "1rem"}}>
+            <textarea 
+               required
+               value={feedback} 
+               onChange={e => setFeedback(e.target.value)}
+               placeholder="Report an issue or suggest a feature for the NGO dashboard..." 
+               style={{...inputStyle, resize: "vertical", minHeight: "80px"}} 
+            />
+            <button type="submit" style={{ alignSelf: "flex-end", background: T.earth, color: T.wheat, border: "none", padding: "0.8rem 1.5rem", borderRadius: T.r, cursor: "pointer", fontWeight: 600 }}>
+               {feedbackSent ? "Thank you!" : "Submit Feedback"}
+            </button>
+         </form>
+      </div>
+      
+      {/* CSS for the loading spinner */}
+      <style>{`
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      `}</style>
     </div>
   );
 }
