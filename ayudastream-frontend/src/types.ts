@@ -1,15 +1,12 @@
-export type Page = "landing" | "home" | "escrow" | "history";
+export type Page = "landing" | "dashboard" | "deploy" | "audit";
 
-export interface Escrow {
-  id: string;
-  supplier: string;
-  amount: number;
-  fee: number;
-  releaseWindow: 24 | 72 | 168;
-  status: "ACTIVE" | "RELEASED" | "PENDING" | "DISPUTED";
-  txHash: string;
-  createdAt: number;
-  releaseAt: number;
-  crop: string;
-  note: string;
+export interface Disbursement {
+  id: string; 
+  farmer: string; 
+  amount: number; 
+  status: "ALLOCATED";
+  txHash: string; 
+  createdAt: number; 
+  program: string; 
+  municipality: string;
 }
