@@ -1,3 +1,5 @@
+import { useState, useEffect, useCallback } from "react";
+import { CONTRACT_ID } from './config';
 import { rpc, TransactionBuilder, Networks, Contract, Address, nativeToScVal } from "@stellar/stellar-sdk";
 import { isConnected, isAllowed, getAddress, signTransaction, requestAccess } from "@stellar/freighter-api";
 
@@ -36,7 +38,6 @@ interface Disbursement {
 }
 
 /* ─── HELPERS ─── */
-const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
 const fmt = (ts: number) => new Date(ts).toLocaleString("en-PH", { month:"short", day:"numeric", year:"numeric", hour:"numeric", minute:"2-digit" });
 const shortAddr = (a: string) => `${a.slice(0,5)}…${a.slice(-4)}`;
 
