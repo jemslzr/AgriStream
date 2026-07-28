@@ -21,7 +21,7 @@ impl ReliefFundContract {
         env.storage().instance().set(&DataKey::Token, &token);
     }
 
-/// Anyone can allocate/donate relief funds to a beneficiary's address.
+    /// Anyone can allocate/donate relief funds to a beneficiary's address.
     pub fn allocate(env: Env, donor: Address, beneficiary: Address, amount: i128) {
         // 1. Require the donor (any wallet) to sign the transaction
         donor.require_auth(); 
@@ -43,30 +43,6 @@ impl ReliefFundContract {
             .persistent()
             .set(&DataKey::Allocation(beneficiary), &(current_allocation + amount));
     }
-
-    /// Beneficiary claims their allocated funds, transferring tokens from the contract to them.
-    pub fn claim(env: Env, beneficiary: Address) {
-        beneficiary.require_auth();
-        
-        let allocation_key = DataKey::Allocation(beneficiary.clone());
-        let amount: i128 = env.storage().persistent().get(&allocation_key).unwrap_or(0);
-        assert!(amount > 0, "No funds allocated for this address");
-
-        // Reset allocation to prevent double-spending before transferring
-        // Reset allocation to prevent double-spending before transferring
-        env.storage().persistent().set(&allocation_key, &0i128);
-
-        let token_id: Address = env.storage().instance().get(&DataKey::Token).unwrap();
-        let token_client = TokenClient::new(&env, &token_id);
-        
-        // Transfer funds from contract to beneficiary
-        token_client.transfer(&env.current_contract_address(), &beneficiary, &amount);
-    }
-    
-    /// Helper to check a beneficiary's current allocation.
-    pub fn get_allocation(env: Env, beneficiary: Address) -> i128 {
-        env.storage().persistent().get(&DataKey::Allocation(beneficiary)).unwrap_or(0)
-    }
 }
 #[cfg(test)]
-mod test; 
+mod test;
