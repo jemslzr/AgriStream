@@ -104,7 +104,17 @@ npm install
 # Start local development server
 npm run dev
 ```
+### 🧪 Testing the Smart Contract
+The Soroban smart contract includes a comprehensive test suite covering happy paths and edge cases.
 
+To run the test suite locally:
+```bash
+# Navigate to the contracts directory
+cd contracts
+
+# Execute the Rust test suite
+cargo test
+```
 ### System Architecture
 
 
