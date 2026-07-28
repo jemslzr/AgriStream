@@ -57,10 +57,9 @@ export default function App() {
   const [records, setRecords] = useState<Disbursement[]>(load);
   const [walletMsg, setWalletMsg] = useState("");
 
-  useEffect(() => {
+useEffect(() => {
     (async () => {
       try {
-        const { isConnected, isAllowed, getAddress } = await import("@stellar/freighter-api");
         if (await isConnected() && await isAllowed()) {
           const r = await getAddress();
           if (r?.address) { setAddr(r.address); setBalance(9_992.95); }
@@ -74,7 +73,6 @@ export default function App() {
   const connect = async () => {
     setWalletMsg("");
     try {
-      const { isConnected, requestAccess, getAddress } = await import("@stellar/freighter-api");
       if (!await isConnected()) { setWalletMsg("Please install Freighter at freighter.app"); return; }
       await requestAccess();
       const r = await getAddress();
