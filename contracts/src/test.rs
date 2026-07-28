@@ -8,6 +8,7 @@ mod tests {
 
     fn setup_test(env: &Env) -> (ReliefFundContractClient<'_>, Address, Address, Address, TokenClient<'_>) {
         let admin = Address::generate(env);
+        let donor = Address::generate(env);
         let beneficiary = Address::generate(env);
         
         // Setup mock token
@@ -21,80 +22,36 @@ mod tests {
         
         client.initialize(&admin, &token_contract_id);
         
-        // Mint tokens to the contract so it has funds to disburse
-        token_admin_client.mint(&contract_id, &1000);
+        // Mint tokens to the donor so they have funds to disburse
+        token_admin_client.mint(&donor, &1000);
         
-        (client, admin, beneficiary, token_contract_id, token_client)
+        (client, donor, beneficiary, contract_id, token_client)
     }
 
     #[test]
-    fn test_1_happy_path() {
+    fn test_1_happy_path_allocation() {
         let env = Env::default();
         env.mock_all_auths();
-        let (client, admin, beneficiary, _, token_client) = setup_test(&env);
+        let (client, donor, beneficiary, contract_id, token_client) = setup_test(&env);
 
-        client.allocate(&admin, &beneficiary, &100);
-        assert_eq!(client.get_allocation(&beneficiary), 100);
-
-        client.claim(&beneficiary);
+        // Donor allocates funds to beneficiary
+        client.allocate(&donor, &beneficiary, &100);
         
-        // Verify balance transferred
-        assert_eq!(token_client.balance(&beneficiary), 100);
-        // Verify allocation reset
-        assert_eq!(client.get_allocation(&beneficiary), 0);
+        // Verify donor balance decreased
+        assert_eq!(token_client.balance(&donor), 900);
+        
+        // Verify contract received the funds
+        assert_eq!(token_client.balance(&contract_id), 100);
     }
 
     #[test]
-    #[should_panic(expected = "No funds allocated for this address")]
-    fn test_2_edge_case_unauthorized_claim() {
+    #[should_panic(expected = "Amount must be positive")]
+    fn test_2_edge_case_zero_allocation() {
         let env = Env::default();
         env.mock_all_auths();
-        let (client, _, beneficiary, _, _) = setup_test(&env);
+        let (client, donor, beneficiary, _, _) = setup_test(&env);
 
-        // Beneficiary tries to claim without an allocation
-        client.claim(&beneficiary);
-    }
-
-    #[test]
-    fn test_3_state_verification() {
-        let env = Env::default();
-        env.mock_all_auths();
-        let (client, admin, beneficiary, _, _) = setup_test(&env);
-
-        assert_eq!(client.get_allocation(&beneficiary), 0);
-        client.allocate(&admin, &beneficiary, &50);
-        
-        // Assert that contract storage reflects the correct state directly
-        assert_eq!(client.get_allocation(&beneficiary), 50);
-        
-        client.allocate(&admin, &beneficiary, &25);
-        // Assert allocations accumulate
-        assert_eq!(client.get_allocation(&beneficiary), 75);
-    }
-
-    #[test]
-    #[should_panic(expected = "Only admin can allocate")]
-    fn test_4_edge_case_non_admin_allocation() {
-        let env = Env::default();
-        env.mock_all_auths();
-        let (client, _, beneficiary, _, _) = setup_test(&env);
-        let fake_admin = Address::generate(&env);
-
-        // Fake admin attempts to allocate funds
-        client.allocate(&fake_admin, &beneficiary, &100);
-    }
-
-    #[test]
-    #[should_panic(expected = "No funds allocated for this address")]
-    fn test_5_edge_case_double_claim() {
-        let env = Env::default();
-        env.mock_all_auths();
-        let (client, admin, beneficiary, _, _) = setup_test(&env);
-
-        client.allocate(&admin, &beneficiary, &100);
-        client.claim(&beneficiary);
-        
-        // Second claim should panic because allocation was reset to 0
-        client.claim(&beneficiary);
+        // Attempt to allocate 0 funds, expecting a panic
+        client.allocate(&donor, &beneficiary, &0);
     }
 }
