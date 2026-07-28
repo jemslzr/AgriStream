@@ -1,7 +1,10 @@
 {
   "name": "ayudastream-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
+  "description": "NGO Web Portal for automated, on-chain emergency aid disbursement built on Stellar Soroban",
+  "author": "AgriStream Team",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
