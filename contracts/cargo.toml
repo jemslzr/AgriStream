@@ -2,8 +2,12 @@
 name = "agri-stream"
 version = "0.1.0"
 edition = "2021"
-description = "a web portal that allows NGOs to pre-verify these women farmers and instantly disburse USDC directly to their digital wallets the moment a disaster is declared, utilizing a Soroban smart contract that securely escrows funds and guarantees immediate, transparent payouts without middleman delays."
+description = "Soroban smart contract for immediate, transparent USDC disaster aid allocation to Filipino farmers."
 license = "MIT"
+repository = "https://github.com/jemslzr/AgriStream"
+homepage = "https://agri-stream-zkd6.vercel.app/"
+keywords = ["soroban", "stellar", "disaster-relief", "escrow", "usdc"]
+categories = ["wasm", "cryptography::cryptocurrencies"]
 publish = false
 
 [lib]
