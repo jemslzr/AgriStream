@@ -83,22 +83,17 @@ useEffect(() => {
   
   const disconnect = () => { setAddr(""); setBalance(0); setPage("landing"); };
 
-  /* ── SMART CONTRACT CALL (Working Backend) ── */
+/* ── SMART CONTRACT CALL ── */
   const deployFunds = useCallback(async (
     farmer: string, amount: number, program: string, municipality: string
   ): Promise<{success:boolean; message:string; hash?:string}> => {
     if (!addr) return {success:false, message:"NGO Wallet not connected."};
     
     try {
-      const { signTransaction } = await import("@stellar/freighter-api");
-      const sdk = await import("@stellar/stellar-sdk");
-      const { rpc, TransactionBuilder, Networks, Contract, Address, nativeToScVal } = sdk;
-
       const server = new rpc.Server("https://soroban-testnet.stellar.org");
-      const CONTRACT = "GBD7VKH64NE5JN36ULJ3SJICE5Q6XVU6WF5EDK6O3EJW4MSL6XWWIBHM";
       const src = await server.getAccount(addr);
       
-      const call = new Contract(CONTRACT).call(
+      const call = new Contract(CONTRACT_ID).call(
         "allocate",
         new Address(addr).toScVal(),
         new Address(farmer).toScVal(),
@@ -122,7 +117,8 @@ useEffect(() => {
       };
       
       persistRecords([rec, ...records]);
-      setBalance(b => parseFloat((b - amount).toFixed(2)));
+      // Fixed: Explicitly typed 'b' as number to resolve TS7006
+      setBalance((b: number) => parseFloat((b - amount).toFixed(2))); 
       return {success:true, message:`Aid secured on-chain! TX: ${hash.slice(0,10)}…`, hash};
     } catch (err: any) {
       console.error(err);
