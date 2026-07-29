@@ -1,6 +1,6 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl, contracttype, Address, Env};
 use soroban_sdk::token::Client as TokenClient;
+use soroban_sdk::{contract, contractimpl, contracttype, Address, Env};
 
 #[contracttype]
 pub enum DataKey {
@@ -16,7 +16,10 @@ pub struct ReliefFundContract;
 impl ReliefFundContract {
     /// Initializes the contract with the NGO admin address and the USDC token address.
     pub fn initialize(env: Env, admin: Address, token: Address) {
-        assert!(!env.storage().instance().has(&DataKey::Admin), "Already initialized");
+        assert!(
+            !env.storage().instance().has(&DataKey::Admin),
+            "Already initialized"
+        );
         env.storage().instance().set(&DataKey::Admin, &admin);
         env.storage().instance().set(&DataKey::Token, &token);
     }
@@ -24,7 +27,7 @@ impl ReliefFundContract {
     /// Anyone can allocate/donate relief funds to a beneficiary's address.
     pub fn allocate(env: Env, donor: Address, beneficiary: Address, amount: i128) {
         // 1. Require the donor (any wallet) to sign the transaction
-        donor.require_auth(); 
+        donor.require_auth();
         assert!(amount > 0, "Amount must be positive");
 
         // 2. Actually transfer the USDC from the donor's wallet into the smart contract
@@ -38,10 +41,11 @@ impl ReliefFundContract {
             .persistent()
             .get::<_, i128>(&DataKey::Allocation(beneficiary.clone()))
             .unwrap_or(0);
-            
-        env.storage()
-            .persistent()
-            .set(&DataKey::Allocation(beneficiary), &(current_allocation + amount));
+
+        env.storage().persistent().set(
+            &DataKey::Allocation(beneficiary),
+            &(current_allocation + amount),
+        );
     }
 }
 #[cfg(test)]
