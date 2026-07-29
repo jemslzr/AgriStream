@@ -215,7 +215,7 @@ function Landing({ connect }: { connect: () => void }) {
           <button onClick={connect} style={{background:T.lime, color:T.soil, border:"none", borderRadius:T.r, fontFamily:"'DM Mono',monospace", fontWeight:700, fontSize:"0.9rem", letterSpacing:"0.06em", padding:"1rem 2.5rem", cursor:"pointer"}}>
             NGO Login →
           </button>
-          <a href={`https://stellar.expert/explorer/testnet/contract/${CONTRACT_ID}`} target="_blank" rel="noreferrer" style={{background:"none", color:T.mist, border:`1px solid ${T.bark}`, borderRadius:T.r, fontFamily:"'DM Mono',monospace", fontSize:"0.85rem", padding:"1rem 2.5rem", cursor:"pointer", textDecoration:"none"}}>View Contract ↗</a>
+          <a href={`https://stellar.expert/explorer/testnet/contract/CCMEGXTJZZOWESH4OGKEDNNCKVB5BHFJ7UYSTQ4FI4Z5VCBBME2P3RKW`} target="_blank" rel="noreferrer" style={{background:"none", color:T.mist, border:`1px solid ${T.bark}`, borderRadius:T.r, fontFamily:"'DM Mono',monospace", fontSize:"0.85rem", padding:"1rem 2.5rem", cursor:"pointer", textDecoration:"none"}}>View Contract ↗</a>
         </div>
       </section>
     </div>
