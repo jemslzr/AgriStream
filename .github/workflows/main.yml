@@ -2,32 +2,68 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: ["main", "master"]
 
 jobs:
-  build-and-test:
+  frontend:
+    name: Frontend (Node)
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: ayudastream-frontend
+
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: npm
           cache-dependency-path: ayudastream-frontend/package-lock.json
 
       - name: Install dependencies
-        working-directory: ayudastream-frontend
         run: npm ci
 
       - name: Run Tests
-        working-directory: ayudastream-frontend
-        run: npm run test
+        run: npm test --if-present
 
       - name: Build Project
-        working-directory: ayudastream-frontend
         run: npm run build
+
+  backend:
+    name: Backend (Rust)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: contracts
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+          targets: wasm32-unknown-unknown
+
+      - name: Cache cargo registry
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: contracts
+
+      - name: Format check
+        run: cargo fmt --all -- --check
+
+      - name: Lint
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Test
+        run: cargo test --all-features
+
+      - name: Build contract
+        run: cargo build --target wasm32-unknown-unknown --release
